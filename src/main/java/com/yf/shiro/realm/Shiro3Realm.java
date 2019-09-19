@@ -31,6 +31,12 @@ public class Shiro3Realm extends AuthorizingRealm{
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String clientUsername = (String) token.getPrincipal();
         String yourInputPasswordFromWeb = new String((char[]) token.getCredentials());
+        /**
+         * 我们这里需要进行根据用户名查询数据库，
+         * 将查询到的用户名和密码封装为bean然后返回给shiro，
+         * 然后shiro会自动给我们进行验证当前的用户是否存在
+         */
         return new SimpleAuthenticationInfo(clientUsername,"d1b129656359e35e95ebd56a63d7b9e0", ByteSource.Util.bytes("salt"),getName());
+
     }
 }

@@ -20,6 +20,9 @@ import org.junit.Test;
 public class MyTest {
 
 
+    /**
+     * 配置文件配置认证
+     */
     @Test
     public void test01(){
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager
@@ -50,6 +53,9 @@ public class MyTest {
     }
 
 
+    /**
+     * 自定义realm认证
+     */
     @Test
     public void test02(){
         Factory<SecurityManager> factory=new IniSecurityManagerFactory("classpath:shiro2.ini");
@@ -64,7 +70,9 @@ public class MyTest {
 
     }
 
-
+    /**
+     * 自定义realm认证+加密
+     */
     @Test
     public void test03(){
         Factory<SecurityManager> securityManagerFactory=new IniSecurityManagerFactory("classpath:shiro3.ini");
@@ -78,6 +86,34 @@ public class MyTest {
         Assert.assertEquals(true,subject.isAuthenticated());
 
     }
+
+
+    /**
+     * 自定义realm认证+加密+授权
+     */
+    @Test
+    public void test04(){
+        Factory<SecurityManager> securityManagerFactory=new IniSecurityManagerFactory("classpath:shiro4.ini");
+        SecurityManager securityManager = securityManagerFactory.getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token=new UsernamePasswordToken("yangfang","123456");
+        //登录用户
+        subject.login(token);
+        //检查当前用户是否具有此角色、返回bool、不抛异常
+        boolean flag = subject.hasRole("add");
+        System.out.println(flag);
+        //检查当前用户是否具有此角色、会抛异常
+        subject.checkRole("admin");
+        //检查用户是否具有该权限(必须全部具有该权限才可以)、会抛异常
+        subject.checkPermissions("add", "delete","update","select");
+
+        subject.logout();
+
+
+    }
+
+
 
 
     @After
